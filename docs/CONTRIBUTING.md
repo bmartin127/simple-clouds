@@ -15,6 +15,7 @@ This repository is not the place for general questions/support, so do not open a
 ### Bug Reports
 
 Before opening a bug report, please do the following:
+- Read our [notes about compatibility](https://github.com/nonamecrackers2/simple-clouds/wiki/Compatibility) to make sure you aren't opening an issue we're already aware about.
 - Ensure that all mods, including Simple Clouds, **are up to date**, and that you are using a **Minecraft version that is actively supported by Simple Clouds**, unless if you consider the issue you are experiencing as a critical bug.
 - Check to see if your **graphics drivers are up to date**, and if they are not, **update them** and **see if the issue persists**.
 - While we understand this may not always be possible, **make sure you can accurately replicate your bug with precise, and concise, set of steps to reproduce the issue.**
@@ -22,6 +23,9 @@ Before opening a bug report, please do the following:
 - **Include all required information** in the bug report form.
 
 ### Features/Suggestions
+
+Please **do not suggest** your idea if it pertains to:
+- Adding "fantasy" cloud types to the mod. By "fantasy" we mean cloud types that you come up with or those that do not exist in real life. You can create your own cloud types with datapacks/resourcepacks.
 
 Before opening a feature/suggestion/idea issue, please do the following:
 - Make sure your feature/suggestion/idea has not already been suggested (as outlined above) and that **it is not already planned or exists in the mod.** Make sure you are playing with the latest version to understand what all exists.
@@ -39,7 +43,7 @@ _Failure to follow any of these requirements will result in your issue being clo
 
 ## Pull Requests
 
-When submitting a pull request, you grant nonamecrackers2 the right to license your cotributions under [PolyForm Perimeter License 1.0.1](https://github.com/nonamecrackers2/simple-clouds/blob/1.20.1/LICENSE.md).
+When submitting a pull request, you grant nonamecrackers2 the right to license your contributions under [PolyForm Perimeter License 1.0.1](https://github.com/nonamecrackers2/simple-clouds/blob/1.20.1/LICENSE.md).
 
 Please follow and replicate, to the best of your ability, the primary author nonamecrackers2's code style as outlined [in this document](https://github.com/nonamecrackers2/nonamecrackers2/blob/main/CODE_STYLE.md).
 
