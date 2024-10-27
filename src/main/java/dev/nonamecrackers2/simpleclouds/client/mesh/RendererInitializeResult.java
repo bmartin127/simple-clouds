@@ -15,25 +15,25 @@ import net.minecraft.CrashReportCategory;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 
-public class GeneratorInitializeResult
+public class RendererInitializeResult
 {
-	private final GeneratorInitializeResult.State state;
-	private final List<GeneratorInitializeResult.Error> errors;
+	private final RendererInitializeResult.State state;
+	private final List<RendererInitializeResult.Error> errors;
 	private @Nullable List<Path> savedReportsPaths;
 	private @Nullable List<CrashReport> crashReports;
 	
-	private GeneratorInitializeResult(GeneratorInitializeResult.State state, List<GeneratorInitializeResult.Error> errors)
+	private RendererInitializeResult(RendererInitializeResult.State state, List<RendererInitializeResult.Error> errors)
 	{
 		this.state = state;
 		this.errors = errors;
 	}
 	
-	public GeneratorInitializeResult.State getState()
+	public RendererInitializeResult.State getState()
 	{
 		return this.state;
 	}
 	
-	public List<GeneratorInitializeResult.Error> getErrors()
+	public List<RendererInitializeResult.Error> getErrors()
 	{
 		return this.errors;
 	}
@@ -41,7 +41,7 @@ public class GeneratorInitializeResult
 	public List<CrashReport> createCrashReports()
 	{
 		List<CrashReport> reports = Lists.newArrayList();
-		for (GeneratorInitializeResult.Error error : this.errors)
+		for (RendererInitializeResult.Error error : this.errors)
 		{
 			CrashReport report = CrashReport.forThrowable(error.error(), "Simple Clouds mesh generator initialization; " + error.title());
 			CrashReportCategory category = report.addCategory("Initialization details");
@@ -81,14 +81,14 @@ public class GeneratorInitializeResult
 		return this.savedReportsPaths;
 	}
 	
-	public static GeneratorInitializeResult success()
+	public static RendererInitializeResult success()
 	{
-		return new GeneratorInitializeResult(GeneratorInitializeResult.State.SUCCESS, ImmutableList.of());
+		return new RendererInitializeResult(RendererInitializeResult.State.SUCCESS, ImmutableList.of());
 	}
 	
-	public static GeneratorInitializeResult.Builder builder()
+	public static RendererInitializeResult.Builder builder()
 	{
-		return new GeneratorInitializeResult.Builder();
+		return new RendererInitializeResult.Builder();
 	}
 	
 	public static record Error(@Nullable Throwable error, String title, @Nullable Component text) {}
@@ -101,15 +101,15 @@ public class GeneratorInitializeResult
 	
 	public static class Builder
 	{
-		private GeneratorInitializeResult.State state = GeneratorInitializeResult.State.SUCCESS;
-		private final ImmutableList.Builder<GeneratorInitializeResult.Error> errors = ImmutableList.builder();
+		private RendererInitializeResult.State state = RendererInitializeResult.State.SUCCESS;
+		private final ImmutableList.Builder<RendererInitializeResult.Error> errors = ImmutableList.builder();
 		
 		private Builder() {}
 		
 		public Builder addError(@Nullable Throwable error, String title, Component text)
 		{
-			this.errors.add(new GeneratorInitializeResult.Error(error, title, Objects.requireNonNull(text)));
-			this.state = GeneratorInitializeResult.State.ERROR;
+			this.errors.add(new RendererInitializeResult.Error(error, title, Objects.requireNonNull(text)));
+			this.state = RendererInitializeResult.State.ERROR;
 			return this;
 		}
 		
@@ -123,14 +123,19 @@ public class GeneratorInitializeResult
 			return this.addError(error, title, Component.translatable("gui.simpleclouds.error.recommendations"));
 		}
 		
+		public Builder errorOpenGL()
+		{
+			return this.addError(null, "Outdated OpenGL Version", Component.translatable("gui.simpleclouds.error.opengl"));
+		}
+		
 		public Builder errorCouldNotLoadMeshScript(@Nullable Throwable error, String title)
 		{
 			return this.addError(error, title, Component.translatable("gui.simpleclouds.error.couldNotLoadMeshScript"));
 		}
 		
-		public GeneratorInitializeResult build()
+		public RendererInitializeResult build()
 		{
-			return new GeneratorInitializeResult(this.state, this.errors.build());
+			return new RendererInitializeResult(this.state, this.errors.build());
 		}
 	}
 }

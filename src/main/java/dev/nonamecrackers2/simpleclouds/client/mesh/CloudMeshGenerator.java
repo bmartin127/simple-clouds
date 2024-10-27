@@ -48,8 +48,8 @@ public abstract class CloudMeshGenerator
 	private static final Logger LOGGER = LogManager.getLogger("simpleclouds/CloudMeshGenerator");
 	public static final ResourceLocation MAIN_CUBE_MESH_GENERATOR = SimpleCloudsMod.id("cube_mesh");
 	public static final int VERTICAL_CHUNK_SPAN = 8;
-	public static final int WORK_SIZE = 4;
 	public static final int LOCAL_SIZE = 8;
+	public static final int WORK_SIZE = SimpleCloudsConstants.CHUNK_SIZE / LOCAL_SIZE;
 	public static final int MAX_SIDE_BUFFER_SIZE = 335544320;
 	public static final int BYTES_PER_VERTEX = 20;
 	public static final int BYTES_PER_SIDE = BYTES_PER_VERTEX * 4;
@@ -177,12 +177,12 @@ public abstract class CloudMeshGenerator
 		this.indexBufferSize = this.shader.bindShaderStorageBuffer("IndexBuffer", GL15.GL_DYNAMIC_COPY).allocateBuffer(MAX_SIDE_BUFFER_SIZE); //Index data, arbitrary size
 	}
 	
-	public final GeneratorInitializeResult init(ResourceManager manager)
+	public final RendererInitializeResult init(ResourceManager manager)
 	{
-		GeneratorInitializeResult.Builder builder = GeneratorInitializeResult.builder();
+		RendererInitializeResult.Builder builder = RendererInitializeResult.builder();
 				
 		if (!RenderSystem.isOnRenderThreadOrInit())
-			return builder.errorUnknown(new IllegalStateException("Init not called on render thread"), "Head").build();
+			return builder.errorUnknown(new IllegalStateException("Init not called on render thread"), "Mesh Generator; Head").build();
 		
 		GL42.glMemoryBarrier(GL42.GL_ALL_BARRIER_BITS);
 		this.chunkGenTasks.clear();
@@ -252,11 +252,11 @@ public abstract class CloudMeshGenerator
 		catch (IOException e)
 		{
 			//LOGGER.warn("Failed to load compute shader", e);
-			builder.errorCouldNotLoadMeshScript(e, "Compute Shader");
+			builder.errorCouldNotLoadMeshScript(e, "Mesh Generator; Compute Shader");
 		}
 		catch (Exception e)
 		{
-			builder.errorRecommendations(e, "Compute Shader");
+			builder.errorRecommendations(e, "Mesh Generator; Compute Shader");
 		}
 		
 		this.arrayObjectId = GL30.glGenVertexArrays();

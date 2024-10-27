@@ -77,9 +77,10 @@ public class SimpleCloudsLangProvider extends LanguageProvider
 		this.add("simpleclouds.subtitle.distant_thunder", "Distant Thunder Roars");
 		this.add("simpleclouds.subtitle.close_thunder", "Thunder Roars");
 		this.add("gui.simpleclouds.error_screen.title", "Simple Clouds Error");
-		this.add("gui.simpleclouds.error_screen.description", "An error occured while initializing the cloud mesh generator.");
+		this.add("gui.simpleclouds.error_screen.description", "An error occured while initializing Simple Clouds.");
 		this.add("gui.simpleclouds.error_screen.no_errors", "There are no errors? What?");
-		this.add("gui.simpleclouds.error.recommendations", "Please try updating your graphics drivers. If the issue persists, please make a bug report on the Simple Clouds repository, linked below. Make sure to include the crash report with your issue.\n\nPlease note that Simple Clouds only supports GPUs that support OpenGL 4.3+. If you've updated your graphics drivers and this issue still persists, it is likely your graphics card is too old to support Simple Clouds.");
+		this.add("gui.simpleclouds.error.recommendations", "Please try updating your graphics drivers. If the issue persists, please make a bug report on the Simple Clouds repository, linked below. Make sure to include the crash report with your issue.");
+		this.add("gui.simpleclouds.error.opengl", "Your graphics processer does not support Simple Clouds.\n\nSimple Clouds only supports GPUs that have OpenGL 4.3+ capabilities. Please try updating your graphics drivers.\n\nIf you are a Mac user, it is likely your device only supports OpenGL 4.1. Check the OpenGL version to see if this is the case. Unfortunately, this is a limitation that Simple Clouds cannot work around.");
 		this.add("gui.simpleclouds.error.unknown", "Please make a bug report on the mod's GitHub repository, linked below. Make sure to include the crash report and latest.log file with your issue.");
 		this.add("gui.simpleclouds.error.couldNotLoadMeshScript", "Failed to load the mesh compute shader. Please make a bug report on the mod's GitHub repository, linked below. Make sure to include the crash report and latest.log file with your issue.\n\nTo developers: If you are modifying the cube_mesh.comp file using a resource pack and have made an error, this message will appear on start up. Please see the latest.log for more details.");
 		this.add("gui.simpleclouds.error_screen.button.crash_report", "Crash Report");

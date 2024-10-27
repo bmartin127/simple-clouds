@@ -16,6 +16,8 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -40,7 +42,7 @@ import dev.nonamecrackers2.simpleclouds.SimpleCloudsMod;
 import dev.nonamecrackers2.simpleclouds.client.cloud.ClientSideCloudTypeManager;
 import dev.nonamecrackers2.simpleclouds.client.mesh.CloudMeshGenerator;
 import dev.nonamecrackers2.simpleclouds.client.mesh.CloudStyle;
-import dev.nonamecrackers2.simpleclouds.client.mesh.GeneratorInitializeResult;
+import dev.nonamecrackers2.simpleclouds.client.mesh.RendererInitializeResult;
 import dev.nonamecrackers2.simpleclouds.client.mesh.SingleRegionCloudMeshGenerator;
 import dev.nonamecrackers2.simpleclouds.client.mesh.multiregion.MultiRegionCloudMeshGenerator;
 import dev.nonamecrackers2.simpleclouds.client.renderer.lightning.LightningBolt;
@@ -71,6 +73,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fml.loading.ImmediateWindowHandler;
 import nonamecrackers2.crackerslib.common.compat.CompatHelper;
 
 public class SimpleCloudsRenderer implements ResourceManagerReloadListener
@@ -83,12 +86,14 @@ public class SimpleCloudsRenderer implements ResourceManagerReloadListener
 	private static final ResourceLocation STORM_POST_PROCESSING_LOC = SimpleCloudsMod.id("shaders/post/storm_post.json");
 	private static final ResourceLocation BLUR_POST_PROCESSING_LOC = SimpleCloudsMod.id("shaders/post/blur_post.json");
 	private static final ResourceLocation SCREEN_SPACE_WORLD_FOG_LOC = SimpleCloudsMod.id("shaders/post/screen_space_world_fog.json");
+	private static final ArtifactVersion REQUIRED_OPENGL_VERSION = new DefaultArtifactVersion("4.3");
 	public static final int SHADOW_MAP_SIZE = 1024;
 	public static final int MAX_LIGHTNING_BOLTS = 16;
 	public static final int BYTES_PER_LIGHTNING_BOLT = 16;
 	private static @Nullable SimpleCloudsRenderer instance;
 	private final Minecraft mc;
 	private final WorldEffects worldEffectsManager;
+	private ArtifactVersion openGlVersion;
 	private CloudMeshGenerator meshGenerator;
 	private Matrix4f shadowMapProjMat;
 	private @Nullable RenderTarget cloudTarget;
@@ -113,7 +118,7 @@ public class SimpleCloudsRenderer implements ResourceManagerReloadListener
 	private @Nullable CloudStyle cloudStyle;
 	private @Nullable RegionType regionGenerator;
 	private boolean needsReload;
-	private @Nullable GeneratorInitializeResult initialInitializationResult;
+	private @Nullable RendererInitializeResult initialInitializationResult;
 //	private int shadowMapPixelBufferId = -1;
 //	private @Nullable ByteBuffer shadowMapPixelBuffer;
 //	private long currentShadowMapPixelFence = -1;
@@ -207,6 +212,15 @@ public class SimpleCloudsRenderer implements ResourceManagerReloadListener
 	{
 		RenderSystem.assertOnRenderThreadOrInit();
 		
+		ArtifactVersion openGlVersion = new DefaultArtifactVersion(ImmediateWindowHandler.getGLVersion());
+		if (this.openGlVersion == null && openGlVersion.compareTo(REQUIRED_OPENGL_VERSION) < 0)
+		{
+			LOGGER.error("Simple Clouds renderer could not initialize. OpenGL version is {}, minimum required is {}", openGlVersion, REQUIRED_OPENGL_VERSION);
+			this.initialInitializationResult = RendererInitializeResult.builder().errorOpenGL().build();
+			this.openGlVersion = openGlVersion;
+			return;
+		}
+		
 		this.failedToCopyDepthBuffer = false;
 		
 		if (this.cloudTarget != null)
@@ -293,7 +307,7 @@ public class SimpleCloudsRenderer implements ResourceManagerReloadListener
 		
 		this.setupMeshGenerator(0.0F); //Setup the mesh generator
 		
-		GeneratorInitializeResult result = this.meshGenerator.init(manager); //Initialize
+		RendererInitializeResult result = this.meshGenerator.init(manager); //Initialize
 		if (this.initialInitializationResult == null)
 			this.initialInitializationResult = result;
 		
@@ -504,7 +518,8 @@ public class SimpleCloudsRenderer implements ResourceManagerReloadListener
 		this.stormFogTarget = null;
 		this.blurTarget = null;
 		this.destroyPostChains();
-		this.meshGenerator.close();
+		if (this.meshGenerator != null)
+			this.meshGenerator.close();
 		
 		if (this.shadowMapDepthTextureId != -1)
 		{
@@ -1027,7 +1042,7 @@ public class SimpleCloudsRenderer implements ResourceManagerReloadListener
 		}
 	}
 	
-	public @Nullable GeneratorInitializeResult getInitialInitializationResult()
+	public @Nullable RendererInitializeResult getInitialInitializationResult()
 	{
 		return this.initialInitializationResult;
 	}

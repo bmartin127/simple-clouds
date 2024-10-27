@@ -46,7 +46,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraftforge.client.ForgeHooksClient;
 
-public class ComputeShader implements AutoCloseable
+public class ComputeShader
 {
 	protected static final Logger LOGGER = LogManager.getLogger("simpleclouds/ComputeShader");
 	private static final Pattern LOCAL_GROUP_REPLACER = Pattern.compile("\\$\\{.*?\\}");
@@ -127,7 +127,6 @@ public class ComputeShader implements AutoCloseable
 		ALL_IMAGE_BINDINGS.remove((Object)unit);
 	}
 	
-	@Override
 	public void close()
 	{
 		RenderSystem.assertOnRenderThread();
