@@ -42,7 +42,6 @@ public class TickChunks {
             if (biomePrecipitation != Biome.Precipitation.NONE) {
                 BlockState blockState = level.getBlockState(belowPos);
                 blockState.getBlock().handlePrecipitation(blockState, level, belowPos, biomePrecipitation);
-                LOGGER.debug("SnowAndCauldronCalled at chunk center: {}, raining: {}, snowing: {}", checkPos, isRaining, isSnowing);
             }
 
             // Check for snow accumulation
