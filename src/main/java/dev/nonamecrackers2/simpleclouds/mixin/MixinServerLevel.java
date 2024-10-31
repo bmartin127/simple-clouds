@@ -16,7 +16,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 
-import static dev.nonamecrackers2.simpleclouds.common.event.TickChunks.RainAndSnowVanillaCompatibility;
+import static dev.nonamecrackers2.simpleclouds.common.event.TickChunks.rainAndSnowVanillaCompatibility;
+
 
 @Mixin(ServerLevel.class)
 public abstract class MixinServerLevel implements CloudManagerAccessor<ServerLevel>
@@ -45,11 +46,12 @@ public abstract class MixinServerLevel implements CloudManagerAccessor<ServerLev
 		}
 	}
 	@Inject(method = "tickChunk", at = @At(value = "RETURN"))
-	public void simpleclouds$LocalizedWeatherHandlePrecipitation(LevelChunk chunk, int tickSpeed, CallbackInfo ci)
+	public void simpleclouds$localizedWeatherHandlePrecipitation(LevelChunk chunk, int tickSpeed, CallbackInfo ci)
 	{
 		CloudManager<?> manager = CloudManager.get((Level)(Object)this);
-		if (!manager.shouldUseVanillaWeather()){
-			RainAndSnowVanillaCompatibility((ServerLevel) (Object) this, chunk);
+		if (!manager.shouldUseVanillaWeather())
+		{
+			rainAndSnowVanillaCompatibility((ServerLevel)(Object)this, chunk);
 		}
 	}
 	
